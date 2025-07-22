@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body>{children}</body>
+      <body className="font-estedad h-dvh">{children}</body>
     </html>
   );
 }
