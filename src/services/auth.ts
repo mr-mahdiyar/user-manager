@@ -18,7 +18,7 @@ export async function refresh() {
   const cookieStore = await cookies();
 
   const now = new Date();
-  const newExpirationDate = now.setMinutes(now.getMinutes() + 15);
+  const newExpirationDate = new Date(now.setMinutes(now.getMinutes() + 15));
 
   cookieStore.set("token", newExpirationDate.toString());
 }
