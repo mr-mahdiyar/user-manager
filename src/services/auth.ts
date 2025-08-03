@@ -2,6 +2,12 @@
 
 import { cookies } from "next/headers";
 
+export async function login() {
+  const cookieStore = await cookies();
+  const now = new Date();
+  cookieStore.set("token", now.toString());
+}
+
 export async function getToken() {
   const cookieStore = await cookies();
 
