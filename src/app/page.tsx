@@ -1,8 +1,8 @@
 "use client";
 
 import { useForm, Controller, useFormState } from "react-hook-form";
-import Container from "./components/Container";
-import Input from "./components/Input";
+import Container from "../components/Container";
+import Input from "../components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { credentialsSchema, type Credentials } from "@/schema/credentials";
 import { useEffect, useTransition } from "react";
