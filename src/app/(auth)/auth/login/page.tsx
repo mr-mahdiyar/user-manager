@@ -2,16 +2,16 @@
 
 import { useForm, Controller, useFormState } from "react-hook-form";
 import Container from "../../../../components/Container";
-import Input from "../../../../components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { credentialsSchema, type Credentials } from "@/schema/credentials";
 import { useEffect, useTransition } from "react";
 import { findAdmin } from "@/services/admin";
 import { login } from "@/services/auth";
 import { useRouter } from "next/navigation";
+import { Input } from "@heroui/input";
+import { Button, addToast } from "@heroui/react";
 
 export default function HomePage() {
-
   const [transition, startTransition] = useTransition();
   const { replace } = useRouter();
 
@@ -36,8 +36,16 @@ export default function HomePage() {
     setFocus("username", { shouldSelect: true });
   }, []);
 
-  async function handleSubmit(values: Credentials) {
+  useEffect(() => {
+    if (errors.root)
+      addToast({
+        title: "خطا",
+        description: "نام کاربری یا رمز عبور اشتباه است.",
+        color: "danger",
+      });
+  }, [errors.root]);
 
+  async function handleSubmit(values: Credentials) {
     const { username, password } = values;
 
     try {
@@ -50,7 +58,7 @@ export default function HomePage() {
           return;
         }
         await login();
-        replace("/dashboard")
+        replace("/dashboard");
       });
     } catch {
       setError("root", {
@@ -62,9 +70,8 @@ export default function HomePage() {
   return (
     <Container className="flex items-center justify-center h-full">
       <section className="flex flex-col justify-center items-center gap-y-8 w-96">
-        <h1>خوش آمدید! برای ادامه وارد شوید...</h1>
         <form
-          className="flex flex-col bg-linear-to-r from-primary/70 via-primary/40 to-primary/70  p-8 pb-4 rounded-xl w-full"
+          className="flex flex-col bg-emerald-300  p-8 pb-4 rounded-xl w-full gap-y-6 shadow-md"
           onSubmit={reactHookFormHandleSubmit(handleSubmit)}
         >
           <Controller
@@ -72,9 +79,13 @@ export default function HomePage() {
             render={({ field }) => (
               <Input
                 {...field}
-                className="my-3 text-left bg-secondary"
+                classNames={{
+                  input: "placeholder:text-left text-left",
+                  errorMessage: "mt-2 text-red-500 font-bold",
+                }}
                 placeholder="username"
-                errorText={errors.username?.message}
+                errorMessage={errors.username?.message}
+                isInvalid={!!errors.username}
               />
             )}
             name="username"
@@ -84,21 +95,21 @@ export default function HomePage() {
             render={({ field }) => (
               <Input
                 {...field}
-                className="my-3 text-left bg-secondary"
+                classNames={{
+                  input: "placeholder:text-left text-left",
+                  errorMessage: "mt-2 text-red-500 font-bold",
+                }}
                 type="password"
                 placeholder="password"
-                errorText={errors.password?.message}
+                errorMessage={errors.password?.message}
+                isInvalid={!!errors.password}
               />
             )}
             name="password"
           />
-          <button
-            className="bg-tertiary disabled:bg-tertiary/90 p-1 rounded-lg mt-6 cursor-pointer h-8"
-            disabled={transition}
-          >
+          <Button type="submit" variant="solid" className="bg-pink-600 text-white" disabled={transition}>
             ورود
-          </button>
-          {errors.root && <p className="mt-4 text-red-500">{errors.root.message}</p>}
+          </Button>
         </form>
       </section>
     </Container>
