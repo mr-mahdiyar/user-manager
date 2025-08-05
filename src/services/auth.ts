@@ -28,7 +28,6 @@ export async function isUserLoggedIn() {
 }
 
 export async function logout() {
-  console.log("trying to logout")
   const cookieStore = await cookies();
   cookieStore.delete("token");
 }
