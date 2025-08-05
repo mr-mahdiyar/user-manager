@@ -1,5 +1,8 @@
 @import "tailwindcss";
+@plugin '../../hero.ts';
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 
+@custom-variant dark (&:is(.dark *));
 @font-face {
   font-family: "Estedad";
   src: url(../../public/assets/fonts/Estedad.ttf) format("truetype")
@@ -12,6 +15,8 @@
   --color-tertiary: #fee100;
   --color-quaternary: #ee7002;
   --color-quinary: #c12a00;
+  --color-senary: #1fa74a;
+  --color-septenary: #8de6a0;
 }
 
 .loader, .loader:before, .loader:after {
