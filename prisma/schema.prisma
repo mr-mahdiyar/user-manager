@@ -12,7 +12,36 @@ datasource db {
 }
 
 model Admin {
-  id Int @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   username String
   password String
+}
+
+model UserStatus {
+  id       Int     @id @default(autoincrement())
+  isActive Boolean
+  User     User[]
+}
+
+model Base {
+  id   Int    @id @default(autoincrement())
+  name String
+  User User[]
+}
+
+model User {
+  id             Int        @id @default(autoincrement())
+  nationalCode   String     @unique
+  name           String
+  family         String
+  age            Int
+  fatherName     String
+  phone          String
+  birthDate      DateTime
+  membershipDate DateTime
+  caseNumber     String
+  statusId       Int
+  status         UserStatus @relation(fields: [statusId], references: [id])
+  baseId         Int
+  base           Base       @relation(fields: [baseId], references: [id])
 }
