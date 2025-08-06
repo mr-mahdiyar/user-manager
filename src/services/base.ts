@@ -13,3 +13,9 @@ export async function addBase(base: Base) {
 
   return response;
 }
+
+export async function getBases() {
+  const client = new PrismaClient();
+  const bases = await client.base.findMany();
+  return bases;
+}
