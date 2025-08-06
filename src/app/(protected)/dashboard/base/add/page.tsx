@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Base, BaseSchema } from "@/schema/base";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@heroui/input";
-import Container from "@/components/Container";
+import  { PageContainer } from "@/components/Container";
 import { Button, addToast } from "@heroui/react";
 import { useAddBase } from "@/hooks/base";
 import { useEffect } from "react";
@@ -53,7 +53,7 @@ export default function AddBasePage() {
   }
 
   return (
-    <Container className="border h-full w-full flex justify-center items-center rounded-3xl shadow-lg">
+    <PageContainer className="flex justify-center items-center">
       <form
         className="w-96 flex flex-col gap-y-8 bg-cyan-400 p-12 rounded-lg"
         onSubmit={hookFormHandleSubmit(handleSubmit)}
@@ -78,6 +78,6 @@ export default function AddBasePage() {
           {isAddBasePending ? "کمی صبر کنید..." : "تایید"}
         </Button>
       </form>
-    </Container>
+    </PageContainer>
   );
 }
