@@ -19,3 +19,21 @@ export async function getBases() {
   const bases = await client.base.findMany();
   return bases;
 }
+export async function getBaseById(id: number) {
+  const client = new PrismaClient();
+  const base = await client.base.findUnique({
+    where: { id },
+  });
+  return base;
+}
+
+export async function updateBaseById(id: number, base: Base) {
+  const client = new PrismaClient();
+  const response = client.base.update({
+    where: { id },
+    data: {
+      ...base,
+    },
+  });
+  return response;
+}
