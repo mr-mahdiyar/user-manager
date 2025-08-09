@@ -1,19 +1,23 @@
-import clsx from "clsx";
-import React, { ComponentPropsWithRef } from "react";
+"use client";
 
-interface InputProps
-  extends Pick<ComponentPropsWithRef<"input">, "className" | "onChange" | "type" | "placeholder" | "name"> {
-  errorText?: string;
+import { Input as HeroUiInput, InputProps as HeroUIInputProps } from "@heroui/input";
+import { memo } from "react";
+
+interface InputProps extends HeroUIInputProps {
+  errorMessage: string;
+  isInvalid: boolean;
 }
-export default function Input({ errorText, ...props }: InputProps) {
+
+function CustomInput(props: InputProps) {
   return (
-    <>
-      <input
-        autoComplete="new-password"
-        {...props}
-        className={clsx("border-black/40 outline-none border rounded-lg p-1 focus:border-black", props.className)}
-      />
-      {Boolean(errorText) && <p className="text-red-500 text-sm">{errorText}</p>}
-    </>
+    <HeroUiInput
+      labelPlacement="outside"
+      classNames={{
+        errorMessage: "mt-2 text-red-500 font-bold",
+      }}
+      {...props}
+    />
   );
 }
+
+export const Input = memo(CustomInput);
