@@ -37,3 +37,21 @@ export async function updateBaseById(id: number, base: Base) {
   });
   return response;
 }
+
+export async function getBaseMembershipsAmount(id: string) {
+  const client = new PrismaClient();
+
+  const membershipsAmount = await client.user.findMany({
+    where: { baseId: Number(id) },
+  });
+
+  return membershipsAmount.length;
+}
+
+export async function deleteBase(id: number) {
+  const prisma = new PrismaClient();
+  const response = await prisma.base.delete({
+    where: { id },
+  });
+  return response;
+}

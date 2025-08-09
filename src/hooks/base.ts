@@ -1,6 +1,7 @@
 import { Base } from "@/schema/base";
-import { addBase, getBaseById, getBases, updateBaseById } from "@/services/base";
+import { addBase, deleteBase, getBaseById, getBaseMembershipsAmount, getBases, updateBaseById } from "@/services/base";
 import { useMutation, useQuery } from "@tanstack/react-query";
+
 export function useAddBase() {
   const { mutate, isError, isPending, isSuccess } = useMutation({
     mutationFn: ({ name, leader, location }: Pick<Base, "name" | "leader" | "location">) =>
@@ -38,5 +39,35 @@ export function useUpdateBase(id: number) {
     updateBaseError: error,
     updateBase: mutate,
     wasUpdateBaseSuccessful: isSuccess,
+  };
+}
+
+export function useBaseMembershipsAmount(id: string) {
+  const { isFetching, data, isError, error } = useQuery({
+    queryFn: () => getBaseMembershipsAmount(id),
+    queryKey: ["membershipsAmount", id],
+  });
+
+  return {
+    isMembershipsAmountFetching: isFetching,
+    membershipsAmount: data,
+    wasFetchMembershipsFailure: isError,
+    fetchMembershipsError: error,
+  };
+}
+
+export function useDeleteBase(id: number) {
+  
+  const { isPending, isSuccess, mutate, isError, error } = useMutation({
+    mutationFn: () => deleteBase(id),
+    mutationKey: ["deleteBase", id],
+  });
+
+  return {
+    isDeletingBase: isPending,
+    deleteBase: mutate,
+    wasDeletingBaseSuccessful: isSuccess,
+    wasDeletingBaseFailure: isError,
+    deletingError: error,
   };
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import Container from "@/components/Container";
+import { SelectedBaseProvider } from "@/context/useSelectedBase";
+import { VisibilityProvider } from "@/context/useVisibility";
 import { logout } from "@/services/auth";
 import { Button } from "@heroui/react";
 import Link from "next/link";
@@ -33,7 +35,11 @@ export default function Layout({ children }: PropsWithChildren) {
           خروج
         </Button>
       </nav>
-      {children}
+      <SelectedBaseProvider>
+        <VisibilityProvider>
+          {children}
+        </VisibilityProvider>
+      </SelectedBaseProvider>
     </Container>
   );
 }
