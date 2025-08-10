@@ -2,74 +2,22 @@
 
 import { useSelectedBase } from "@/context/useSelectedBase";
 import { useDeleteBase } from "@/hooks/base";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  ModalProps,
-  Spinner,
-  addToast,
-} from "@heroui/react";
-import { useQueryClient } from "@tanstack/react-query";
-
-import { useEffect } from "react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, ModalProps, Spinner } from "@heroui/react";
 
 export default function DeleteModal(props?: Omit<ModalProps, "children">) {
-  const { selectedBase, setSelectedBase } = useSelectedBase();
+  const { selectedBase } = useSelectedBase();
 
-  const client = useQueryClient();
-  
-  const { deleteBase, isDeletingBase, wasDeletingBaseSuccessful, wasDeletingBaseFailure } = useDeleteBase(
-    selectedBase.id
-  );
+  const { deleteBase, isDeletingBase } = useDeleteBase(selectedBase.id);
 
   function handleClose() {
     try {
       deleteBase();
+      props?.onClose!();
     } catch (error) {
       console.error(error);
     }
   }
 
-  useEffect(() => {
-    if (wasDeletingBaseFailure) {
-      addToast({
-        title: "خطا",
-        description: `حذف مرجع ${selectedBase.name} با خطا مواجه شد.`,
-        color: "danger",
-      });
-      setSelectedBase({
-        id: -1,
-        location: "",
-        leader: "",
-        name: "",
-      });
-      if (props && props.onClose) props.onClose();
-    }
-  }, [wasDeletingBaseFailure]);
-
-  useEffect(() => {
-    if (wasDeletingBaseSuccessful) {
-      addToast({
-        title: "حذف",
-        description: "مرجع با موفقیت حذف شد.",
-        color: "success",
-      });
-      client.invalidateQueries({
-        queryKey: ["bases"],
-      });
-      setSelectedBase({
-        id: -1,
-        location: "",
-        leader: "",
-        name: "",
-      });
-      if (props && props.onClose) props.onClose();
-    }
-  }, [wasDeletingBaseSuccessful]);
   return (
     <Modal isOpen={props?.isOpen} onOpenChange={props?.onOpenChange}>
       <ModalContent>
@@ -86,7 +34,7 @@ export default function DeleteModal(props?: Omit<ModalProps, "children">) {
               )}
             </ModalBody>
             <ModalFooter>
-              <Button className="bg-white" onPress={handleClose}>
+              <Button className="bg-white" onPress={() => props?.onClose!()}>
                 انصراف
               </Button>
               <Button color="danger" variant="light" onPress={handleClose}>

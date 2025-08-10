@@ -1,6 +1,8 @@
+import { initialBase, useSelectedBase } from "@/context/useSelectedBase";
 import { Base } from "@/schema/base";
 import { addBase, deleteBase, getBaseById, getBaseMembershipsAmount, getBases, updateBaseById } from "@/services/base";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { addToast } from "@heroui/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useAddBase() {
   const { mutate, isError, isPending, isSuccess } = useMutation({
@@ -57,10 +59,33 @@ export function useBaseMembershipsAmount(id: string) {
 }
 
 export function useDeleteBase(id: number) {
-  
+  const client = useQueryClient();
+  const { selectedBase, setSelectedBase } = useSelectedBase();
+
   const { isPending, isSuccess, mutate, isError, error } = useMutation({
     mutationFn: () => deleteBase(id),
     mutationKey: ["deleteBase", id],
+    onSuccess: () => {
+      addToast({
+        title: "حذف",
+        description: "مرجع با موفقیت حذف شد.",
+        color: "success",
+      });
+
+      client.invalidateQueries({
+        queryKey: ["bases"],
+      });
+
+      setSelectedBase(initialBase);
+    },
+    onError: () => {
+      addToast({
+        title: "خطا",
+        description: `حذف مرجع ${selectedBase.name} با خطا مواجه شد.`,
+        color: "danger",
+      });
+      setSelectedBase(initialBase);
+    },
   });
 
   return {

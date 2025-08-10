@@ -3,7 +3,7 @@
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
 import { Base } from "@/../../generated/prisma";
 
-const initialBase: Base = {
+export const initialBase: Base = {
   id: -1,
   leader: "",
   location: "",
