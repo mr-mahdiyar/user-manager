@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { ComponentProps, PropsWithChildren } from "react";
+import { ComponentProps } from "react";
 
 type LoadingProps = Pick<ComponentProps<"section">, "className">;
 

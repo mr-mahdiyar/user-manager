@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ComponentPropsWithRef, type ReactNode, type PropsWithChildren } from "react";
+import { ComponentPropsWithRef, type ReactNode } from "react";
 
 interface ContainerProps extends Pick<ComponentPropsWithRef<"section">, "className"> {
   children: ReactNode;
@@ -10,5 +10,5 @@ export default function Container({ className, children }: ContainerProps) {
 }
 
 export function PageContainer({ children, className }: ContainerProps) {
-  return <Container className={clsx("border h-full w-full rounded-3xl shadow-lg", className)}>{children}</Container>;
+  return <Container className={clsx("border h-full w-full rounded-3xl shadow-lg", className)}>{children}</Container>
 }
