@@ -58,7 +58,7 @@ export default function HomePage() {
           return;
         }
         await login();
-        replace("/dashboard");
+        replace("/dashboard/memberships");
       });
     } catch {
       setError("root", {
