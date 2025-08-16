@@ -4,8 +4,8 @@ import { Input as HeroUiInput, InputProps as HeroUIInputProps } from "@heroui/in
 import { memo } from "react";
 
 interface InputProps extends HeroUIInputProps {
-  errorMessage: string;
-  isInvalid: boolean;
+  errorMessage?: string;
+  isInvalid?: boolean;
 }
 
 function CustomInput(props: InputProps) {
