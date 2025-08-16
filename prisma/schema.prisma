@@ -36,11 +36,10 @@ model User {
   nationalCode   String     @unique
   name           String
   family         String
-  age            Int
   fatherName     String
   phone          String
   birthDate      DateTime
-  membershipDate DateTime
+  membershipDate DateTime? 
   caseNumber     String
   statusId       Int
   status         UserStatus @relation(fields: [statusId], references: [id])
