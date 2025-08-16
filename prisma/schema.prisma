@@ -24,22 +24,21 @@ model UserStatus {
 }
 
 model Base {
-  id   Int    @id @default(autoincrement())
-  name String
-  leader  String
-  location  String
-  User User[]
+  id       Int    @id @default(autoincrement())
+  name     String
+  leader   String
+  location String
+  User     User[]
 }
 
 model User {
-  id             Int        @id @default(autoincrement())
-  nationalCode   String     @unique
+  nationalCode   String     @id @unique
   name           String
   family         String
   fatherName     String
   phone          String
   birthDate      DateTime
-  membershipDate DateTime? 
+  membershipDate DateTime?
   caseNumber     String
   statusId       Int
   status         UserStatus @relation(fields: [statusId], references: [id])
