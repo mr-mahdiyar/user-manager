@@ -1,4 +1,4 @@
-import { Admin, Base, PrismaClient } from "../generated/prisma";
+import { Admin, Base, PrismaClient, UserStatus } from "../generated/prisma";
 
 const prisma = new PrismaClient();
 
@@ -19,6 +19,17 @@ async function main() {
     },
   ];
 
+  const userStatuses: Array<UserStatus> = [
+    {
+      id: 0,
+      isActive: false,
+    },
+    {
+      id: 1,
+      isActive: true,
+    },
+  ];
+
   Promise.all([
     admins.map(async ({ id, username, password }) => {
       await prisma.admin.upsert({
@@ -32,6 +43,13 @@ async function main() {
         where: { id },
         update: { leader, location, name },
         create: { id, leader, location, name },
+      });
+    }),
+    userStatuses.map(async ({ id, isActive }) => {
+      await prisma.userStatus.upsert({
+        where: { id },
+        update: { isActive },
+        create: { id, isActive },
       });
     }),
   ]);
