@@ -2,7 +2,7 @@
 
 import Container from "@/components/Container";
 import { useBases } from "@/hooks/base";
-import { useAddMembership } from "@/hooks/memebership";
+import { useAddMembership, useMembership } from "@/hooks/memebership";
 import {
   Step1NationalCodeType,
   Step2CaseNumberType,
@@ -13,13 +13,22 @@ import { Input } from "@heroui/input";
 import { Button, Radio, RadioGroup, Select, SelectItem } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
+import { useEffect, useState } from "react";
 import persianCalender from "react-date-object/calendars/persian";
 import persianLanguageForCalender from "react-date-object/locales/persian_fa";
 import { Controller, useForm, useFormContext } from "react-hook-form";
 import DatePicker from "react-multi-date-picker";
 
-export default function Step3PersonalInfo() {
-  const { getValues } = useFormContext<Step1NationalCodeType & Step2CaseNumberType & Step3PersonalInfoType>();
+export default function Step3PersonalInfo({
+  searchedNationalCode,
+  isEditMode,
+}: {
+  searchedNationalCode?: string;
+  isEditMode: boolean;
+}) {
+  const { getValues, setValue: globalSetValue } = useFormContext<
+    Step1NationalCodeType & Step2CaseNumberType & Step3PersonalInfoType
+  >();
 
   const nationalCode = getValues("nationalCode");
   const caseNumber = getValues("caseNumber");
@@ -27,13 +36,19 @@ export default function Step3PersonalInfo() {
   const membershipDate = getValues("membershipDate");
 
   const { bases, isFetchingBases } = useBases();
+  const { isFetchingMembership, fetchMembershipError, membership, wasFetchingMembershipFailure } =
+    useMembership(searchedNationalCode);
+
   const { addMemberShip } = useAddMembership();
+
   const {
     control,
+    reset,
     handleSubmit: hookFormSubmit,
     formState: { errors },
     setValue,
     clearErrors,
+    getValues: localGetValues,
   } = useForm<Step3PersonalInfoType>({
     defaultValues: {
       baseId: undefined,
@@ -48,6 +63,25 @@ export default function Step3PersonalInfo() {
     mode: "all",
     resolver: zodResolver(Step3PersonalInfoSchema),
   });
+
+  useEffect(() => {
+    if (membership && isEditMode) {
+      globalSetValue("caseNumber", membership.caseNumber);
+      globalSetValue("nationalCode", membership.nationalCode);
+
+      reset({
+        ...membership,
+        statusId: (membership.statusId = 0 ? 0 : 1),
+      });
+    }
+  }, [membership]);
+
+  useEffect(() => {
+    if (isEditMode && bases && membership) {
+      const id = bases.find(({ id }) => id === membership.baseId)?.id.toString();
+      if (id) setValue("baseId", +id);
+    }
+  }, [isEditMode, bases, membership]);
 
   async function submitHandler(step3PersonalInfo: Step3PersonalInfoType) {
     try {
@@ -227,21 +261,29 @@ export default function Step3PersonalInfo() {
               <Radio value="1">غیرفعال</Radio>
             </RadioGroup>
           </section>
-          <Select
-            className="max-w-xs"
-            label="نام مرجع"
-            labelPlacement="outside-left"
-            placeholder={isFetchingBases ? "درحال بارگذاری..." : "یک مرجع را انتخاب کنید."}
-            isDisabled={isFetchingBases}
-            onChange={(e) => {
-              setValue("baseId", +e.target.value);
-              clearErrors("baseId");
-            }}
-            isInvalid={!!errors.baseId}
-            errorMessage={errors.baseId?.message}
-          >
-            {bases ? bases?.map(({ id, name }) => <SelectItem key={id}>{name}</SelectItem>) : null}
-          </Select>
+          <section className="w-full">
+            <select
+              className="w-full border p-1 rounded-xl picker:text-red-600"
+              disabled={isFetchingBases}
+              onChange={(e) => {
+                setValue("baseId", +e.target.value);
+                clearErrors("baseId");
+              }}
+              value={localGetValues("baseId")?.toString()}
+            >
+              <>
+                <option>{isFetchingBases ? "درحال بارگذاری..." : "لطفا انتخاب کنید..."}</option>
+                {bases
+                  ? bases?.map(({ id, name }) => (
+                      <option value={id.toString()} key={id.toString()}>
+                        {name}
+                      </option>
+                    ))
+                  : null}
+              </>
+            </select>
+            {errors.baseId && <p className="text-red-500 text-xs mt-1">{errors.baseId.message}</p>}
+          </section>
         </section>
         <Button type="submit">تایید</Button>
       </form>

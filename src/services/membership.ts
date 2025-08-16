@@ -4,8 +4,10 @@ import { PrismaClient, User } from "@/../generated/prisma";
 
 export async function addMembership(newMember: Omit<User, "id">) {
   const client = new PrismaClient();
-  const result = client.user.create({
-    data: newMember,
+  const result = client.user.upsert({
+    where: { nationalCode: newMember.nationalCode },
+    update: { ...newMember },
+    create: { ...newMember },
   });
 
   return result;
@@ -33,4 +35,11 @@ export async function checkCaseNumberExistence(caseNumber: string) {
   });
 
   return !Boolean(user);
+}
+
+export async function getMembershipByNationalCode(nationalCode: string) {
+  const prisma = new PrismaClient();
+  return await prisma.user.findUnique({
+    where: { nationalCode },
+  });
 }

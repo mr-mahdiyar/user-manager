@@ -7,7 +7,15 @@ import Step3PersonalInfo from "./Step3PersonalInfo";
 
 export type Step = "Step1NationalCode" | "Step2CaseNumber" | "Step3PersonalInfo";
 
-export function MembershipForm({ isCreateMode, isEditMode }: { isCreateMode: boolean; isEditMode: boolean }) {
+export function MembershipForm({
+  isCreateMode,
+  isEditMode,
+  searchedNationalCode,
+}: {
+  isCreateMode: boolean;
+  isEditMode: boolean;
+  searchedNationalCode: string;
+}) {
   const [step, setStep] = useState<Step>("Step1NationalCode");
   const setStepCallback = useCallback((step: Step) => setStep(step), []);
 
@@ -20,8 +28,10 @@ export function MembershipForm({ isCreateMode, isEditMode }: { isCreateMode: boo
         return <Step2CaseNumber setStep={setStepCallback} />;
       }
       case "Step3PersonalInfo": {
-        return <Step3PersonalInfo />;
+        return <Step3PersonalInfo isEditMode={isEditMode} />;
       }
     }
+  } else {
+    return <Step3PersonalInfo searchedNationalCode={searchedNationalCode} isEditMode={isEditMode} />;
   }
 }
