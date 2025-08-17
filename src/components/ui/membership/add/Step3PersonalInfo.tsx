@@ -263,9 +263,9 @@ export default function Step3PersonalInfo({
             </RadioGroup>
           </section>
           <Select
-            className="max-w-xs"
+            className="w-full"
             label="نام مرجع"
-            labelPlacement="outside-left"
+            labelPlacement="outside"
             selectedKeys={[localGetValues("baseId")?.toString() ?? ""]}
             placeholder={isFetchingBases ? "درحال بارگذاری..." : "یک مرجع را انتخاب کنید."}
             isDisabled={isFetchingBases}
