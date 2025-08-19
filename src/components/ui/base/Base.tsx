@@ -1,6 +1,6 @@
 "use client";
 
-import { Base } from "@/../../../../generated/prisma";
+import { Base as BaseType } from "@/../../../../generated/prisma";
 import { useSelectedBase } from "@/context/useSelectedBase";
 import { useBaseMembershipsAmount } from "@/hooks/base";
 import { Spinner, useDisclosure } from "@heroui/react";
@@ -9,7 +9,7 @@ import { IoPencil } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import DeleteModal from "./Modal";
 
-export default function Base({ base }: { base: Base }) {
+export default function Base({ base }: { base: BaseType }) {
 
   const { setSelectedBase } = useSelectedBase();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
