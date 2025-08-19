@@ -39,7 +39,16 @@ export async function checkCaseNumberExistence(caseNumber: string) {
 
 export async function getMembershipByNationalCode(nationalCode: string) {
   const prisma = new PrismaClient();
-  return await prisma.user.findUnique({
+  const foundedUser = await prisma.user.findUnique({
     where: { nationalCode },
   });
+
+  if (!foundedUser) throw new Error("User not found.");
+  return foundedUser;
+}
+
+export async function getMemberships() {
+  const prisma = new PrismaClient();
+  const users = await prisma.user.findMany();
+  return users;
 }

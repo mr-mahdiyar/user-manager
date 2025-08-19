@@ -1,17 +1,31 @@
 "use client";
 
 import { type User } from "@/../../generated/prisma";
-import { addMembership, getMembershipByNationalCode } from "@/services/membership";
+import { addMembership, getMembershipByNationalCode, getMemberships } from "@/services/membership";
+import { addToast } from "@heroui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export function useAddMembership() {
+  const { push } = useRouter();
+
   const { isSuccess, isPending, error, isError, mutate } = useMutation({
     mutationFn: (newMember: Omit<User, "id">) => addMembership(newMember),
     mutationKey: ["addMembership"],
-    onSuccess: () => console.log("added"),
-    onError: (error, variables) => {
-      console.error(error);
-      console.log("here is variables: ", variables);
+    onSuccess: () => {
+      addToast({
+        title: "موفق",
+        description: "عضو با موفقیت اضافه / ویرایش شد.",
+        color: "success",
+      });
+      push("/dashboard/memberships");
+    },
+    onError: () => {
+      addToast({
+        title: "ناموفق",
+        description: "عضو اضافه / ویرایش نشد.",
+        color: "danger",
+      });
     },
   });
 
@@ -27,7 +41,7 @@ export function useAddMembership() {
 export function useMembership(searchedNationalCode: string = "") {
   const { isFetching, data, isError, error } = useQuery({
     queryFn: () => getMembershipByNationalCode(searchedNationalCode),
-    queryKey: ["getMembership"],
+    queryKey: ["getMembership", searchedNationalCode],
     enabled: !!searchedNationalCode,
   });
 
@@ -37,4 +51,20 @@ export function useMembership(searchedNationalCode: string = "") {
     wasFetchingMembershipFailure: isError,
     fetchMembershipError: error,
   };
+}
+
+export function useMemberships() {
+
+  const { data, isFetching, isError, error } = useQuery({
+    queryFn: getMemberships,
+    queryKey: ["memberships"],
+  });
+
+  return {
+    isMembershipsFetching: isFetching,
+    memberships: data,
+    wasGetMembershipsFailure: isError,
+    gettingMembershipsError: error,
+  };
+  
 }
