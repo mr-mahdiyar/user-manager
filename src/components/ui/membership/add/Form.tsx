@@ -28,10 +28,17 @@ export function MembershipForm({
         return <Step2CaseNumber setStep={setStepCallback} />;
       }
       case "Step3PersonalInfo": {
-        return <Step3PersonalInfo isEditMode={isEditMode} />;
+        return <Step3PersonalInfo isCreateMode={isCreateMode} isEditMode={isEditMode} setStep={setStepCallback} />;
       }
     }
   } else {
-    return <Step3PersonalInfo searchedNationalCode={searchedNationalCode} isEditMode={isEditMode} />;
+    return (
+      <Step3PersonalInfo
+        isCreateMode={isCreateMode}
+        searchedNationalCode={searchedNationalCode}
+        isEditMode={isEditMode}
+        setStep={setStepCallback}
+      />
+    );
   }
 }
