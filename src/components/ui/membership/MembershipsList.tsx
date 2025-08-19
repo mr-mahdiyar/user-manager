@@ -1,8 +1,11 @@
+"use client"
+
 import { useMemberships } from "@/hooks/memebership";
 import { Spinner } from "@heroui/react";
 import Membership from "./Membership";
 
 export default function MembershipsList() {
+  
   const { isMembershipsFetching, memberships } = useMemberships();
 
   if (isMembershipsFetching) {
