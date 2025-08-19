@@ -4,13 +4,13 @@ import Container from "@/components/Container";
 import { useBases } from "@/hooks/base";
 import { useAddMembership, useMembership } from "@/hooks/memebership";
 import {
-  Step1NationalCodeType,
-  Step2CaseNumberType,
+  type Step1NationalCodeType,
+  type Step2CaseNumberType,
   Step3PersonalInfoSchema,
-  Step3PersonalInfoType,
+  type Step3PersonalInfoType,
 } from "@/schema/user";
 import { Input } from "@heroui/input";
-import { Button, Radio, RadioGroup, Select, SelectItem } from "@heroui/react";
+import { Button, Radio, RadioGroup, Select, SelectItem, Spinner } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { useEffect } from "react";
@@ -18,35 +18,31 @@ import persianCalender from "react-date-object/calendars/persian";
 import persianLanguageForCalender from "react-date-object/locales/persian_fa";
 import { Controller, useForm, useFormContext } from "react-hook-form";
 import DatePicker from "react-multi-date-picker";
+import { Step } from "./Form";
 
-export default function Step3PersonalInfo({
-  searchedNationalCode,
-  isEditMode,
-}: {
+interface Step3PersonalInfoProps {
   searchedNationalCode?: string;
   isEditMode: boolean;
-}) {
-  const { getValues, setValue: globalSetValue } = useFormContext<
+  isCreateMode: boolean;
+  setStep: (step: Step) => void;
+}
+
+export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
+  const { getValues: globalGetValues, setValue: globalSetValue } = useFormContext<
     Step1NationalCodeType & Step2CaseNumberType & Step3PersonalInfoType
   >();
-
-  const nationalCode = getValues("nationalCode");
-  const caseNumber = getValues("caseNumber");
-  const birthDate = getValues("birthDate");
-  const membershipDate = getValues("membershipDate");
-
+  const { isCreateMode, isEditMode, setStep, searchedNationalCode } = props;
   const { bases, isFetchingBases } = useBases();
-  const { isFetchingMembership, fetchMembershipError, membership, wasFetchingMembershipFailure } =
-    useMembership(searchedNationalCode);
+  const { isFetchingMembership, membership, wasFetchingMembershipFailure } = useMembership(searchedNationalCode);
 
-  const { addMemberShip } = useAddMembership();
+  const { addMemberShip, isAddingMembership } = useAddMembership();
 
   const {
     control,
     reset,
     handleSubmit: hookFormSubmit,
     formState: { errors },
-    setValue,
+    setValue: localSetValue,
     clearErrors,
     getValues: localGetValues,
   } = useForm<Step3PersonalInfoType>({
@@ -64,14 +60,18 @@ export default function Step3PersonalInfo({
     resolver: zodResolver(Step3PersonalInfoSchema),
   });
 
+  const nationalCode = globalGetValues("nationalCode");
+  const caseNumber = globalGetValues("caseNumber");
+  const membershipDate = localGetValues("membershipDate");
+  const birthDate = localGetValues("birthDate");
+
   useEffect(() => {
     if (membership && isEditMode) {
       globalSetValue("caseNumber", membership.caseNumber);
       globalSetValue("nationalCode", membership.nationalCode);
-
       reset({
         ...membership,
-        statusId: (membership.statusId = 0 ? 0 : 1),
+        statusId: membership.statusId === 0 ? 0 : 1,
       });
     }
   }, [membership]);
@@ -79,7 +79,7 @@ export default function Step3PersonalInfo({
   useEffect(() => {
     if (isEditMode && bases && membership) {
       const id = bases.find(({ id }) => id === membership.baseId)?.id.toString();
-      if (id) setValue("baseId", +id);
+      if (id) localSetValue("baseId", +id);
     }
   }, [isEditMode, bases, membership]);
 
@@ -92,6 +92,20 @@ export default function Step3PersonalInfo({
       });
     } catch (error) {}
   }
+
+  if (isEditMode && isFetchingMembership)
+    return (
+      <Container className="w-full h-full flex items-center justify-center">
+        <Spinner color="primary" />
+      </Container>
+    );
+
+  if (isEditMode && wasFetchingMembershipFailure)
+    return (
+      <Container className="w-full h-full flex items-center justify-center">
+        <p className="text-red-500">کاربر یافت نشد.</p>
+      </Container>
+    );
 
   return (
     <Container className="grid place-items-center items-center h-full w-full p-8">
@@ -248,18 +262,28 @@ export default function Step3PersonalInfo({
         <section className="w-full grid grid-cols-3 gap-x-6 items-center">
           <section>
             <RadioGroup
-              defaultValue={"0"}
+              value={localGetValues("statusId")?.toString() ?? "1"}
+              onValueChange={(e) => {
+                const prevMembershipData = localGetValues();
+                reset(
+                  { ...prevMembershipData, statusId: +e === 0 ? 0 : 1 },
+                  {
+                    keepDirty: true,
+                    keepTouched: true,
+                    keepErrors: true,
+                    keepIsSubmitted: true,
+                    keepIsValid: true,
+                  }
+                );
+              }}
               label="وضعیت: "
               classNames={{
                 wrapper: "flex-row",
                 base: "flex-row",
               }}
-              onChange={(e) => setValue("statusId", e.currentTarget.value === "0" ? 0 : 1)}
             >
-              <Radio defaultChecked value="0">
-                فعال
-              </Radio>
-              <Radio value="1">غیرفعال</Radio>
+              <Radio value="1">فعال</Radio>
+              <Radio value="0">غیرفعال</Radio>
             </RadioGroup>
           </section>
           <Select
@@ -270,7 +294,7 @@ export default function Step3PersonalInfo({
             placeholder={isFetchingBases ? "درحال بارگذاری..." : "یک مرجع را انتخاب کنید."}
             isDisabled={isFetchingBases}
             onChange={(e) => {
-              setValue("baseId", +e.target.value);
+              localSetValue("baseId", +e.target.value);
               clearErrors("baseId");
             }}
             isInvalid={!!errors.baseId}
@@ -279,7 +303,27 @@ export default function Step3PersonalInfo({
             {bases ? bases?.map(({ id, name }) => <SelectItem key={id}>{name}</SelectItem>) : null}
           </Select>
         </section>
-        <Button type="submit">تایید</Button>
+        <section className="flex gap-x-6">
+          {isCreateMode && (
+            <Button
+              className="w-full text-white"
+              type="button"
+              onClick={() => setStep("Step2CaseNumber")}
+              color="warning"
+            >
+              بازگشت
+            </Button>
+          )}
+          <Button
+            className="w-full"
+            type="submit"
+            color="primary"
+            isLoading={isAddingMembership}
+            disabled={isAddingMembership}
+          >
+            تایید
+          </Button>
+        </section>
       </form>
     </Container>
   );
