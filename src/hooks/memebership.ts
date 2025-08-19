@@ -1,9 +1,10 @@
 "use client";
 
 import { type User } from "@/../../generated/prisma";
-import { addMembership, getMembershipByNationalCode, getMemberships } from "@/services/membership";
+import { initialUser, useSelectedMembership } from "@/context/useSelectedMembership";
+import { addMembership, deleteMembership, getMembershipByNationalCode, getMemberships } from "@/services/membership";
 import { addToast } from "@heroui/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export function useAddMembership() {
@@ -54,10 +55,9 @@ export function useMembership(searchedNationalCode: string = "") {
 }
 
 export function useMemberships() {
-
   const { data, isFetching, isError, error } = useQuery({
-    queryFn: getMemberships,
     queryKey: ["memberships"],
+    queryFn: getMemberships,
   });
 
   return {
@@ -66,5 +66,39 @@ export function useMemberships() {
     wasGetMembershipsFailure: isError,
     gettingMembershipsError: error,
   };
-  
+}
+
+export function useDeleteMembership(nationalCode: string) {
+  const client = useQueryClient();
+  const { selectedMembership, setSelectedMembership } = useSelectedMembership();
+
+  const { mutate, isPending, isSuccess } = useMutation({
+    mutationFn: () => deleteMembership(nationalCode),
+    mutationKey: ["deleteMembership", nationalCode],
+    onSuccess: () => {
+      const fullName = selectedMembership.name + " " + selectedMembership.family;
+
+      addToast({
+        title: "حذف",
+        description: `${fullName} با موفقیت حذف شد.`,
+        color: "success",
+      });
+      setSelectedMembership(initialUser);
+      client.invalidateQueries({
+        queryKey: ["memberships"],
+      });
+    },
+    onError: () => {
+      const fullName = selectedMembership.name + " " + selectedMembership.family;
+
+      addToast({
+        title: "خطا",
+        description: `حذف ${fullName} با خطا مواجه شد.`,
+        color: "danger",
+      });
+      setSelectedMembership(initialUser);
+    },
+  });
+
+  return { deleteMembership: mutate, isDeletingMembership: isPending, wasDeletingMembershipSuccessful: isSuccess };
 }

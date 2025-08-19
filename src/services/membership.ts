@@ -4,12 +4,11 @@ import { PrismaClient, User } from "@/../generated/prisma";
 
 export async function addMembership(newMember: Omit<User, "id">) {
   const client = new PrismaClient();
-  const result = client.user.upsert({
+  const result = await client.user.upsert({
     where: { nationalCode: newMember.nationalCode },
     update: { ...newMember },
     create: { ...newMember },
   });
-
   return result;
 }
 
@@ -51,4 +50,12 @@ export async function getMemberships() {
   const prisma = new PrismaClient();
   const users = await prisma.user.findMany();
   return users;
+}
+
+export async function deleteMembership(nationalCode: string) {
+  const prisma = new PrismaClient();
+  const response = await prisma.user.delete({
+    where: { nationalCode },
+  });
+  return response;
 }

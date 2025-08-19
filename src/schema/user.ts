@@ -32,6 +32,7 @@ export const Step2CaseNumberSchema = z
     },
     {
       error: "پرونده ای با این شماره قبلا ثبت شده است.",
+      path: ["caseNumber"]
     }
   );
 
