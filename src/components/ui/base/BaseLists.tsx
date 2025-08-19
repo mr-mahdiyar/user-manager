@@ -1,5 +1,5 @@
 import React from "react";
-import { type Base } from "@/../../../../generated/prisma";
+import { type Base } from "@prisma/client";
 import BaseRow from "./Base";
 
 export default function BaseLists({ bases }: { bases: Array<Base> }) {

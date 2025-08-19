@@ -1,15 +1,18 @@
-"use client"
+"use client";
 
 import { useMemberships } from "@/hooks/memebership";
 import { Spinner } from "@heroui/react";
 import Membership from "./Membership";
 
 export default function MembershipsList() {
-  
   const { isMembershipsFetching, memberships } = useMemberships();
 
   if (isMembershipsFetching) {
     return <Spinner />;
+  }
+
+  if (memberships?.length === 0) {
+    return <p className="text-red-500">هنوز هیچ عضوی اضافه نشده است.</p>;
   }
 
   return (

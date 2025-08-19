@@ -1,6 +1,6 @@
 "use client";
 
-import { Base as BaseType } from "@/../../../../generated/prisma";
+import { Base as BaseType } from "@prisma/client";
 import { useSelectedBase } from "@/context/useSelectedBase";
 import { useBaseMembershipsAmount } from "@/hooks/base";
 import { Spinner, useDisclosure } from "@heroui/react";

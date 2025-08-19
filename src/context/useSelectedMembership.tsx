@@ -1,7 +1,7 @@
 "use client";
 
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
-import { type User } from "@/../../generated/prisma";
+import { type User } from "@prisma/client";
 
 export const initialUser: User = {
   baseId: -1,

@@ -3,7 +3,7 @@
 import { PropsWithChildren } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-export default function MemberShipLayout({ children }: { children: PropsWithChildren }) {
+export default function MemberShipLayout({ children }: PropsWithChildren) {
   const methods = useForm();
 
   return (

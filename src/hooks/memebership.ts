@@ -1,6 +1,6 @@
 "use client";
 
-import { type User } from "@/../../generated/prisma";
+import { type User } from "@prisma/client";
 import { initialUser, useSelectedMembership } from "@/context/useSelectedMembership";
 import { addMembership, deleteMembership, getMembershipByNationalCode, getMemberships } from "@/services/membership";
 import { addToast } from "@heroui/react";

@@ -1,6 +1,6 @@
 "use client";
 
-import { type User } from "@/../../generated/prisma";
+import { type User } from "@prisma/client";
 import { useSelectedMembership } from "@/context/useSelectedMembership";
 import { useBase } from "@/hooks/base";
 import { Spinner, useDisclosure } from "@heroui/react";
