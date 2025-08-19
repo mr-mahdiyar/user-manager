@@ -39,6 +39,7 @@ export default function Step2CaseNumber({ setStep }: { setStep: (step: Step) => 
         <Controller
           render={({ field }) => (
             <Input
+              dir="ltr"
               {...field}
               isInvalid={Boolean(errors.caseNumber)}
               errorMessage={errors.caseNumber?.message}

@@ -35,6 +35,8 @@ export default function Step1NationalCode({ setStep }: { setStep: (step: Step) =
         <Controller
           render={({ field }) => (
             <Input
+              autoFocus
+              dir="ltr"
               {...field}
               isInvalid={Boolean(errors.nationalCode)}
               errorMessage={errors.nationalCode?.message}
