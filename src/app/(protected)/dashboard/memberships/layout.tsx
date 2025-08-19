@@ -1,6 +1,7 @@
 "use client";
 
 import Container from "@/components/Container";
+import { SelectedMembershipProvider } from "@/context/useSelectedMembership";
 import { logout } from "@/services/auth";
 import { Button } from "@heroui/react";
 import Link from "next/link";
@@ -36,7 +37,7 @@ export default function Layout({ children }: PropsWithChildren) {
           خروج
         </Button>
       </nav>
-      {children}
+      <SelectedMembershipProvider>{children}</SelectedMembershipProvider>
     </Container>
   );
 }
