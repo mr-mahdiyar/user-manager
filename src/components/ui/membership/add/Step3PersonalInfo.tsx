@@ -16,9 +16,10 @@ import clsx from "clsx";
 import { useEffect } from "react";
 import persianCalender from "react-date-object/calendars/persian";
 import persianLanguageForCalender from "react-date-object/locales/persian_fa";
-import { Controller, useForm, useFormContext } from "react-hook-form";
+import { Controller, FieldValues, useForm, useFormContext } from "react-hook-form";
 import DatePicker from "react-multi-date-picker";
 import { Step } from "./Form";
+import SelectBase from "@/components/SelectBase";
 
 interface Step3PersonalInfoProps {
   searchedNationalCode?: string;
@@ -286,22 +287,7 @@ export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
               <Radio value="0">غیرفعال</Radio>
             </RadioGroup>
           </section>
-          <Select
-            className="w-full"
-            label="نام مرجع"
-            labelPlacement="outside"
-            selectedKeys={[localGetValues("baseId")?.toString() ?? ""]}
-            placeholder={isFetchingBases ? "درحال بارگذاری..." : "یک مرجع را انتخاب کنید."}
-            isDisabled={isFetchingBases}
-            onChange={(e) => {
-              localSetValue("baseId", +e.target.value);
-              clearErrors("baseId");
-            }}
-            isInvalid={!!errors.baseId}
-            errorMessage={errors.baseId?.message}
-          >
-            {bases ? bases?.map(({ id, name }) => <SelectItem key={id}>{name}</SelectItem>) : null}
-          </Select>
+          <SelectBase clearErrors={clearErrors} errors={errors} getValues={localGetValues} setValue={localSetValue} />
         </section>
         <section className="flex gap-x-6">
           {isCreateMode && (

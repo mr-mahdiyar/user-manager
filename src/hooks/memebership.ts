@@ -2,7 +2,13 @@
 
 import { type User } from "@prisma/client";
 import { initialUser, useSelectedMembership } from "@/context/useSelectedMembership";
-import { addMembership, deleteMembership, getMembershipByNationalCode, getMemberships } from "@/services/membership";
+import {
+  addMembership,
+  deleteMembership,
+  getMembershipByNationalCode,
+  getMemberships,
+  searchMemberships,
+} from "@/services/membership";
 import { addToast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -101,4 +107,17 @@ export function useDeleteMembership(nationalCode: string) {
   });
 
   return { deleteMembership: mutate, isDeletingMembership: isPending, wasDeletingMembershipSuccessful: isSuccess };
+}
+
+export function useSearchMemberships() {
+  const { mutateAsync } = useMutation({
+    mutationFn: (filters: {
+      firstName: string;
+      lastName: string;
+      nationalCode: string;
+      caseNumber: string;
+      baseId: number;
+    }) => searchMemberships(filters),
+  });
+  return { mutateAsync };
 }

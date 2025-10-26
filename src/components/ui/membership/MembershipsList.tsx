@@ -3,16 +3,20 @@
 import { useMemberships } from "@/hooks/memebership";
 import { Spinner } from "@heroui/react";
 import Membership from "./Membership";
+import { User } from "../../../../generated/prisma";
 
-export default function MembershipsList() {
-  const { isMembershipsFetching, memberships } = useMemberships();
+interface MembershipProps {
+  isMembershipsFetching: boolean;
+  memberships: User[] | undefined;
+}
 
+export default function MembershipsList({ isMembershipsFetching, memberships }: MembershipProps) {
   if (isMembershipsFetching) {
     return <Spinner />;
   }
 
   if (memberships?.length === 0) {
-    return <p className="text-red-500">هنوز هیچ عضوی اضافه نشده است.</p>;
+    return <p className="text-red-500">هیچ عضوی برای نمایش وجود ندارد.</p>;
   }
 
   return (

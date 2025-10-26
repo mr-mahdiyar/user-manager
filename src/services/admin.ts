@@ -1,6 +1,7 @@
 "use server"
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/prisma";
+
 
 export async function findAdmin(username: string, password: string) {
 

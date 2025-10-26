@@ -1,7 +1,7 @@
 "use server";
 
 import { Base } from "@/schema/base";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/prisma";
 
 export async function addBase(base: Base) {
   const client = new PrismaClient();
