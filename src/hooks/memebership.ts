@@ -11,7 +11,7 @@ import {
 } from "@/services/membership";
 import { addToast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export function useAddMembership() {
   const { push } = useRouter();
@@ -61,9 +61,12 @@ export function useMembership(searchedNationalCode: string = "") {
 }
 
 export function useMemberships() {
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const { data, isFetching, isError, error } = useQuery({
-    queryKey: ["memberships"],
-    queryFn: getMemberships,
+    queryKey: ["memberships", currentPage],
+    queryFn: () => getMemberships(currentPage),
   });
 
   return {
@@ -110,6 +113,8 @@ export function useDeleteMembership(nationalCode: string) {
 }
 
 export function useSearchMemberships() {
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
   const { mutateAsync } = useMutation({
     mutationFn: (filters: {
       firstName: string;
@@ -117,7 +122,7 @@ export function useSearchMemberships() {
       nationalCode: string;
       caseNumber: string;
       baseId: number;
-    }) => searchMemberships(filters),
+    }) => searchMemberships(filters, currentPage),
   });
   return { mutateAsync };
 }

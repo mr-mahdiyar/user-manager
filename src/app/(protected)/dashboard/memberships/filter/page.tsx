@@ -2,14 +2,13 @@
 
 import { PageContainer } from "@/components/Container";
 import { Input } from "@/components/Input";
+import Pagination from "@/components/Pagination";
 import SelectBase from "@/components/SelectBase";
-import { Radio, RadioGroup } from "@heroui/react";
-import { Controller, useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
-import { useSearchMemberships } from "@/hooks/memebership";
-import { useEffect, useState, useTransition } from "react";
-import { User } from "../../../../../../generated/prisma";
 import MembershipsList from "@/components/ui/membership/MembershipsList";
+import { useSearchMemberships } from "@/hooks/memebership";
+import { useState, useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { User } from "../../../../../../generated/prisma";
 
 interface FilterParameters {
   firstName: string;
@@ -20,12 +19,11 @@ interface FilterParameters {
   baseId: number;
 }
 export default function page() {
-  const [foundedUser, setFoundedUser] = useState<User[] | undefined>([]);
+  const [foundedUser, setFoundedUser] = useState<{ users: User[] | undefined; totalPages: number }>({
+    users: [],
+    totalPages: 0,
+  });
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    console.log(foundedUser);
-  }, [foundedUser]);
 
   const {
     getValues,
@@ -48,16 +46,19 @@ export default function page() {
 
   async function submit(data: FilterParameters) {
     startTransition(async () => {
-      setFoundedUser([]);
+      setFoundedUser({ users: [], totalPages: 1 });
       try {
-        const response = await mutateAsync(data);
-        setFoundedUser(response);
+        const memberships = await mutateAsync(data);
+        setFoundedUser({
+          users: memberships.users,
+          totalPages: memberships.totalPages,
+        });
       } catch (error) {}
     });
   }
 
   return (
-    <PageContainer className="p-4 flex flex-col gap-y-8">
+    <PageContainer className="p-4 flex flex-col gap-y-8 ">
       <form className="flex flex-col gap-y-8" onSubmit={handleSubmit(submit)}>
         <section className="flex gap-x-4">
           <Controller
@@ -103,8 +104,9 @@ export default function page() {
         </section>
       </form>
       <section className="grow flex justify-center items-center">
-        <MembershipsList memberships={foundedUser} isMembershipsFetching={isPending} />
+        <MembershipsList memberships={foundedUser.users} isMembershipsFetching={isPending} />
       </section>
+      <Pagination totalPages={foundedUser.totalPages} />
     </PageContainer>
   );
 }

@@ -46,10 +46,30 @@ export async function getMembershipByNationalCode(nationalCode: string) {
   return foundedUser;
 }
 
-export async function getMemberships() {
+export async function getMemberships(page: number = 1) {
   const prisma = new PrismaClient();
-  const users = await prisma.user.findMany();
-  return users;
+  const pageSize = 10;
+  const skip = (page - 1) * pageSize;
+
+  // دریافت کاربران صفحه فعلی
+  const users = await prisma.user.findMany({
+    skip: skip,
+    take: pageSize,
+  });
+
+  // دریافت تعداد کل کاربران
+  const totalUsers = await prisma.user.count();
+
+  // محاسبه اینکه آیا صفحه بعدی وجود دارد
+  const hasNextPage = skip + pageSize < totalUsers;
+
+  return {
+    users,
+    hasNextPage,
+    currentPage: page,
+    totalPages: Math.ceil(totalUsers / pageSize),
+    totalUsers,
+  };
 }
 
 export async function deleteMembership(nationalCode: string) {
@@ -60,17 +80,23 @@ export async function deleteMembership(nationalCode: string) {
   return response;
 }
 
-export async function searchMemberships(filters: {
-  firstName: string;
-  lastName: string;
-  nationalCode: string;
-  caseNumber: string;
-  // status: number;
-  baseId: number;
-}) {
+export async function searchMemberships(
+  filters: {
+    firstName: string;
+    lastName: string;
+    nationalCode: string;
+    caseNumber: string;
+    // status: number;
+    baseId: number;
+  },
+  page: number = 1
+) {
   const client = new PrismaClient();
 
   try {
+    const pageSize = 10;
+    const skip = (page - 1) * pageSize;
+
     const whereClause: Prisma.UserWhereInput = {};
 
     if (filters.firstName) {
@@ -98,24 +124,42 @@ export async function searchMemberships(filters: {
       };
     }
     // whereClause.statusId = filters.status;
+
     // فیلتر پایگاه
     if (filters.baseId !== -1) {
       whereClause.baseId = filters.baseId;
     }
-    console.log(whereClause);
+
+    // دریافت کاربران با صفحه‌بندی
     const users = await client.user.findMany({
       where: whereClause,
       include: {
         // status: true,
         base: true,
       },
-      orderBy: [{ family: "asc" }, { name: "asc" }],
+      skip: skip,
+      take: pageSize,
     });
 
-    console.log("users: ", users);
-    return users;
+    // دریافت تعداد کل کاربران با فیلترهای اعمال شده
+    const totalUsers = await client.user.count({
+      where: whereClause,
+    });
+
+    // محاسبه اینکه آیا صفحه بعدی وجود دارد
+    const hasNextPage = skip + pageSize < totalUsers;
+
+    return {
+      users,
+      hasNextPage,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / pageSize),
+      totalUsers,
+    };
   } catch (error) {
     console.error("خطا در جستجوی کاربران:", error);
     throw error;
+  } finally {
+    await client.$disconnect();
   }
 }
