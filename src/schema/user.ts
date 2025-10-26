@@ -45,7 +45,7 @@ export const Step3PersonalInfoSchema = z.object({
   phone: z.string("وارد کردن شماره تلفن الزامیست.").regex(/^09\d{9}$/, "شماره تلفن وارد شده نا معتبر است."),
   birthDate: z.date("وارد کردن تاریخ تولد الزامیست"),
   membershipDate: z.date().or(z.null()),
-  statusId: z.literal(0).or(z.literal(1)),
+  status: z.literal(0).or(z.literal(1)).or(z.literal(2)),
   baseId: z.number("انتخاب مرجع الزامیست."),
 });
 

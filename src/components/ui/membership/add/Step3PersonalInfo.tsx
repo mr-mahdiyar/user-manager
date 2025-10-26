@@ -1,6 +1,7 @@
 "use client";
 
 import Container from "@/components/Container";
+import SelectBase from "@/components/SelectBase";
 import { useBases } from "@/hooks/base";
 import { useAddMembership, useMembership } from "@/hooks/memebership";
 import {
@@ -10,16 +11,15 @@ import {
   type Step3PersonalInfoType,
 } from "@/schema/user";
 import { Input } from "@heroui/input";
-import { Button, Radio, RadioGroup, Select, SelectItem, Spinner } from "@heroui/react";
+import { Button, Radio, RadioGroup, Spinner } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { useEffect } from "react";
 import persianCalender from "react-date-object/calendars/persian";
 import persianLanguageForCalender from "react-date-object/locales/persian_fa";
-import { Controller, FieldValues, useForm, useFormContext } from "react-hook-form";
+import { Controller, useForm, useFormContext } from "react-hook-form";
 import DatePicker from "react-multi-date-picker";
 import { Step } from "./Form";
-import SelectBase from "@/components/SelectBase";
 
 interface Step3PersonalInfoProps {
   searchedNationalCode?: string;
@@ -55,7 +55,7 @@ export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
       membershipDate: null,
       name: "",
       phone: "",
-      statusId: 1,
+      status: 1,
     },
     mode: "all",
     resolver: zodResolver(Step3PersonalInfoSchema),
@@ -72,7 +72,7 @@ export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
       globalSetValue("nationalCode", membership.nationalCode);
       reset({
         ...membership,
-        statusId: membership.statusId === 0 ? 0 : 1,
+        status: membership.status as 0 | 1 | 2,
       });
     }
   }, [membership]);
@@ -263,11 +263,11 @@ export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
         <section className="w-full grid grid-cols-3 gap-x-6 items-center">
           <section>
             <RadioGroup
-              value={localGetValues("statusId")?.toString() ?? "1"}
+              value={localGetValues("status")?.toString() ?? "1"}
               onValueChange={(e) => {
                 const prevMembershipData = localGetValues();
                 reset(
-                  { ...prevMembershipData, statusId: +e === 0 ? 0 : 1 },
+                  { ...prevMembershipData, status: +e === 0 ? 0 : 1 ? 1 : 2 },
                   {
                     keepDirty: true,
                     keepTouched: true,
@@ -285,6 +285,7 @@ export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
             >
               <Radio value="1">فعال</Radio>
               <Radio value="0">غیرفعال</Radio>
+              <Radio value="2">راکد</Radio>
             </RadioGroup>
           </section>
           <SelectBase clearErrors={clearErrors} errors={errors} getValues={localGetValues} setValue={localSetValue} />

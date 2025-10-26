@@ -17,12 +17,6 @@ model Admin {
   password String
 }
 
-model UserStatus {
-  id       Int     @id @default(autoincrement())
-  isActive Boolean
-  User     User[]
-}
-
 model Base {
   id       Int    @id @default(autoincrement())
   name     String
@@ -32,7 +26,7 @@ model Base {
 }
 
 model User {
-  nationalCode   String     @id @unique
+  nationalCode   String    @id @unique
   name           String
   family         String
   fatherName     String
@@ -40,8 +34,7 @@ model User {
   birthDate      DateTime
   membershipDate DateTime?
   caseNumber     String
-  statusId       Int
-  status         UserStatus @relation(fields: [statusId], references: [id])
+  status         Int
   baseId         Int
-  base           Base       @relation(fields: [baseId], references: [id])
+  base           Base      @relation(fields: [baseId], references: [id])
 }
