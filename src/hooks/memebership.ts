@@ -1,6 +1,6 @@
 "use client";
 
-import { type User } from "@prisma/client";
+// import { type User } from "@prisma/client";
 import { initialUser, useSelectedMembership } from "@/context/useSelectedMembership";
 import {
   addMembership,

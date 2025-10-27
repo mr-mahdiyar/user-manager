@@ -1,6 +1,6 @@
 "use server";
 
-import { PrismaClient, User, Prisma } from "../../generated/prisma";
+import { PrismaClient, Prisma, User } from "@prisma/client";
 
 export async function addMembership(newMember: Omit<User, "id">) {
   const client = new PrismaClient();

@@ -267,7 +267,7 @@ export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
               onValueChange={(e) => {
                 const prevMembershipData = localGetValues();
                 reset(
-                  { ...prevMembershipData, status: +e === 0 ? 0 : 1 ? 1 : 2 },
+                  { ...prevMembershipData, status: +e as 0 | 1 | 2 },
                   {
                     keepDirty: true,
                     keepTouched: true,
