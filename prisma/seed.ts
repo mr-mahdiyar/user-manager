@@ -17,6 +17,18 @@ async function main() {
       location: "لطف آباد",
       name: "شهید رجایی",
     },
+    {
+      id: 1,
+      leader: "رضا سبحانی",
+      location: "بهشت آباد",
+      name: "شهید کاظمی",
+    },
+    {
+      id: 2,
+      leader: "احمد میراحمدی",
+      location: "حجت آباد",
+      name: "شهید حسینی",
+    },
   ];
 
   Promise.all([
@@ -35,6 +47,7 @@ async function main() {
       });
     }),
   ]);
+  
 }
 
 main()

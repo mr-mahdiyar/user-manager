@@ -49,7 +49,7 @@ export default function Step3PersonalInfo(props: Step3PersonalInfoProps) {
   } = useForm<Step3PersonalInfoType>({
     defaultValues: {
       baseId: undefined,
-      birthDate: undefined,
+      birthDate: null,
       family: "",
       fatherName: "",
       membershipDate: null,

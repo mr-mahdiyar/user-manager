@@ -43,7 +43,7 @@ export const Step3PersonalInfoSchema = z.object({
   family: z.string("وارد کردن نام خانوادگی الزامیست.").min(3, "نام خانوادگی وارد شده باید حداقل شامل سه کاراکتر باشد."),
   fatherName: z.string("وارد کردن نام پدر الزامیست.").min(3, "نام پدر باید حداقل شامل سه کاراکتر باشد."),
   phone: z.string("وارد کردن شماره تلفن الزامیست.").regex(/^09\d{9}$/, "شماره تلفن وارد شده نا معتبر است."),
-  birthDate: z.date("وارد کردن تاریخ تولد الزامیست"),
+  birthDate: z.date("وارد کردن تاریخ تولد الزامیست").or(z.null()),
   membershipDate: z.date().or(z.null()),
   status: z.literal(0).or(z.literal(1)).or(z.literal(2)),
   baseId: z.number("انتخاب مرجع الزامیست."),

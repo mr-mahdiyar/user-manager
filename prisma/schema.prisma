@@ -30,7 +30,7 @@ model User {
   family         String
   fatherName     String
   phone          String
-  birthDate      DateTime
+  birthDate      DateTime?
   membershipDate DateTime?
   caseNumber     String
   status         Int
