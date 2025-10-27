@@ -1,4 +1,5 @@
 import { Admin, Base, PrismaClient } from "@prisma/client";
+import { users } from "./users";
 
 const prisma = new PrismaClient();
 
@@ -46,8 +47,14 @@ async function main() {
         create: { id, leader, location, name },
       });
     }),
+    users.map(async ({ nationalCode, ...rest }) => {
+      await prisma.user.upsert({
+        where: { nationalCode },
+        update: { nationalCode, ...rest },
+        create: { nationalCode, ...rest },
+      });
+    }),
   ]);
-  
 }
 
 main()
