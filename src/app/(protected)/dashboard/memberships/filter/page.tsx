@@ -8,7 +8,7 @@ import MembershipsList from "@/components/ui/membership/MembershipsList";
 import { useSearchMemberships } from "@/hooks/memebership";
 import { useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { User } from "../../../../../../generated/prisma";
+import { User } from "@prisma/client";
 
 interface FilterParameters {
   firstName: string;

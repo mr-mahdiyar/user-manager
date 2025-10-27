@@ -13,7 +13,7 @@ export const initialUser: User = {
   name: "",
   nationalCode: "",
   phone: "",
-  statusId: -1,
+  status: -1,
 };
 
 const SelectedMembershipContext = createContext<User>(initialUser);

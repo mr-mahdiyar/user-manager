@@ -3,7 +3,7 @@
 import { useMemberships } from "@/hooks/memebership";
 import { Spinner } from "@heroui/react";
 import Membership from "./Membership";
-import { User } from "../../../../generated/prisma";
+import { User } from "@prisma/client";
 
 interface MembershipProps {
   isMembershipsFetching: boolean;
