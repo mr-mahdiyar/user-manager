@@ -28,7 +28,7 @@ export default function Layout({ children }: PropsWithChildren) {
         <Link href={"/dashboard/base"} className="bg-amber-500 w-full block p-2 rounded-md text-center">
           لیست مراجع
         </Link>
-        <Link href={"/dashboard/membership"} className="bg-fuchsia-400 w-full block p-2 rounded-md text-center">
+        <Link href={"/dashboard/memberships"} className="bg-fuchsia-400 w-full block p-2 rounded-md text-center">
           لیست اعضا
         </Link>
         <Button className="bg-rose-500 w-full block p-2 rounded-md cursor-pointer" onPressEnd={clickHandler}>
