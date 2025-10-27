@@ -2,9 +2,15 @@
 
 import { type PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider as TanstackQueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const client = new QueryClient();
 
 export default function QueryClientProvider({ children }: PropsWithChildren) {
-  const client = new QueryClient();
-
-  return <TanstackQueryClientProvider client={client}>{children}</TanstackQueryClientProvider>;
+  return (
+    <TanstackQueryClientProvider client={client}>
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      {children}
+    </TanstackQueryClientProvider>
+  );
 }
