@@ -6,16 +6,16 @@ import Pagination from "@/components/Pagination";
 import SelectBase from "@/components/SelectBase";
 import MembershipsList from "@/components/ui/membership/MembershipsList";
 import { useSearchMemberships } from "@/hooks/memebership";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { User } from "@prisma/client";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface FilterParameters {
   firstName: string;
   lastName: string;
   nationalCode: string;
   caseNumber: string;
-  // status: number;
   baseId: number;
 }
 export default function page() {
@@ -23,7 +23,12 @@ export default function page() {
     users: [],
     totalPages: 0,
   });
+
   const [isPending, startTransition] = useTransition();
+
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const urlSearchParams = new URLSearchParams();
 
   const {
     getValues,
@@ -53,9 +58,28 @@ export default function page() {
           users: memberships.users,
           totalPages: memberships.totalPages,
         });
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      } finally {
+        urlSearchParams.set("pate", "1");
+        replace(`${pathname}?${urlSearchParams.toString()}`);
+      }
     });
   }
+
+  const searchParams = useSearchParams();
+  const currentPage = searchParams.get("page");
+
+  useEffect(() => {
+    startTransition(async () => {
+      const values = getValues();
+      const memberships = await mutateAsync(values);
+      setFoundedUser({
+        users: memberships.users,
+        totalPages: memberships.totalPages,
+      });
+    });
+  }, [currentPage]);
 
   return (
     <PageContainer className="p-4 flex flex-col gap-y-8 ">
@@ -103,7 +127,7 @@ export default function page() {
           </button>
         </section>
       </form>
-      <section className="grow flex justify-center items-center">
+      <section className="grow flex justify-center items-center overflow-y-auto scrollbar">
         <MembershipsList memberships={foundedUser.users} isMembershipsFetching={isPending} />
       </section>
       <Pagination totalPages={foundedUser.totalPages} />

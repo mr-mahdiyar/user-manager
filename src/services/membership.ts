@@ -91,6 +91,7 @@ export async function searchMemberships(
   },
   page: number = 1
 ) {
+  console.log("searched.")
   const client = new PrismaClient();
 
   try {

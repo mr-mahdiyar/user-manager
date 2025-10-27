@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 @font-face {
   font-family: "Estedad";
-  src: url(../../public/assets/fonts/Estedad.ttf) format("truetype")
+  src: url(../../public/assets/fonts/Estedad.ttf) format("truetype");
 }
 
 @theme inline {
@@ -19,7 +19,9 @@
   --color-septenary: #8de6a0;
 }
 
-.loader, .loader:before, .loader:after {
+.loader,
+.loader:before,
+.loader:after {
   border-radius: 50%;
   width: 2.5em;
   height: 2.5em;
@@ -28,7 +30,7 @@
 }
 
 .loader {
-  color: #FFF;
+  color: #fff;
   font-size: 7px;
   position: relative;
   text-indent: -9999em;
@@ -37,7 +39,7 @@
 }
 .loader:before,
 .loader:after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
 }
@@ -50,7 +52,23 @@
 }
 
 @keyframes bblFadInOut {
-  0%, 80%, 100% { box-shadow: 0 2.5em 0 -1.3em }
-  40% { box-shadow: 0 2.5em 0 0 }
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
 }
-    
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 20px;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 20px;
+  }
+}

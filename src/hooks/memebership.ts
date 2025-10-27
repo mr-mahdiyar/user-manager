@@ -116,6 +116,7 @@ export function useSearchMemberships() {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const { mutateAsync } = useMutation({
+    mutationKey: ["filter-users", currentPage],
     mutationFn: (filters: {
       firstName: string;
       lastName: string;
