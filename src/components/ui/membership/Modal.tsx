@@ -31,7 +31,7 @@ export default function DeleteModal(props?: Omit<ModalProps, "children">) {
   }
 
   return (
-    <Modal isOpen={props?.isOpen} onOpenChange={props?.onOpenChange}>
+    <Modal isOpen={props?.isOpen} onOpenChange={props?.onOpenChange} backdrop="blur">
       <ModalContent>
         {() => (
           <>
